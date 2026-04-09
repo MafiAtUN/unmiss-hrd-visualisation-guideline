@@ -1,2 +1,7 @@
 .DS_Store
 *.log
+.cursor/
+.claude/
+.codex/
+.vscode/
+*.code-workspace

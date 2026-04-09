@@ -2,12 +2,12 @@
 
 Official web reference for **UNMISS HRD** data visualization and brand identity standards: institutional alignment, color palettes, typography (IBM Plex), chart and map rules, infographic layout, and annotated examples with live Chart.js demos.
 
-- **Live site (GitHub Pages):** https://mafiatun.github.io/unmiss-hrd-visualisation-guideline/
+- **Live site (GitHub Pages):** https://unmiss-human-rights.github.io/unmiss-hrd-visualisation-guideline/
 - **Version:** 2.0 (April 2026)
 
 ## Contents
 
-- `index.html` — single-page guideline (sidebar navigation, sample charts, copy-hex interactions).
+- `index.html` — single-page guideline (floating navigation, sample charts, copy-hex interactions).
 - `assets/unmiss-hrd-logo.png` — HRD logo used in the nav, hero, and infographic mockup.
 
 ## Local preview
