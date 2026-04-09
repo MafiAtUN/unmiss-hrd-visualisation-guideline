@@ -56,7 +56,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
    RESET + BASE
 ───────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:0}
+html{scroll-behavior:smooth;scroll-padding-top:0;overflow-anchor:none}
 body{
   font-family:'IBM Plex Sans',sans-serif;
   font-size:15px;line-height:1.65;
@@ -960,6 +960,7 @@ body.nav-open .sidebar-backdrop{display:block;opacity:1}
 </style>
 </head>
 <body>
+<script>document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);</script>
 
 <!-- PROGRESS BAR -->
 <div class="progress-bar" id="progressBar"></div>
@@ -999,7 +1000,7 @@ body.nav-open .sidebar-backdrop{display:block;opacity:1}
   </div>
   <div class="nav-section">
     <div class="nav-group-label">Introduction</div>
-    <a class="nav-link active" href="#top"><span class="nav-num">00</span>Overview</a>
+    <a class="nav-link active" href="#overview"><span class="nav-num">00</span>Overview</a>
     <div class="nav-group-label">Brand</div>
     <a class="nav-link" href="#brand-identity"><span class="nav-num">01</span>Brand Identity</a>
     <div class="nav-group-label">Color System</div>
@@ -1031,7 +1032,7 @@ body.nav-open .sidebar-backdrop{display:block;opacity:1}
 <main class="main">
 
 <!-- ── HERO ── -->
-<div class="hero" id="top">
+<div class="hero" id="overview">
   <div class="hero-grid">
     <div class="hero-accent-line" id="heroLine"></div>
     <div class="hero-content">
@@ -2166,16 +2167,27 @@ const revealObs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.section').forEach(s => revealObs.observe(s));
 
 /* ── ACTIVE NAV (scroll spy: hero + sections so Overview stays active at top) ── */
-const navSpyIds = ['top','brand-identity','brand','violations','perpetrators','gender','states','sequential','typography','typescale','viztypes','mandatory','samples','maps','infographic','mockup','dosdonts'];
+const navSpyIds = ['overview','brand-identity','brand','violations','perpetrators','gender','states','sequential','typography','typescale','viztypes','mandatory','samples','maps','infographic','mockup','dosdonts'];
 const navLinks = document.querySelectorAll('.nav-link');
 function updateActiveNav() {
-  const y = window.scrollY + Math.min(window.innerHeight * 0.32, 280);
-  let activeId = 'top';
+  const probe = window.scrollY + Math.min(window.innerHeight * 0.32, 280);
+  const hero = document.getElementById('overview');
+  if (hero) {
+    const heroBottom = hero.getBoundingClientRect().bottom + window.scrollY;
+    if (probe < heroBottom - 2) {
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#overview');
+      });
+      return;
+    }
+  }
+  let activeId = 'brand-identity';
   for (const id of navSpyIds) {
+    if (id === 'overview') continue;
     const el = document.getElementById(id);
     if (!el) continue;
     const top = el.getBoundingClientRect().top + window.scrollY;
-    if (top <= y) activeId = id;
+    if (top <= probe) activeId = id;
   }
   navLinks.forEach(l => {
     l.classList.toggle('active', l.getAttribute('href') === '#' + activeId);
@@ -2185,7 +2197,7 @@ window.addEventListener('scroll', updateActiveNav, { passive: true });
 window.addEventListener('resize', updateActiveNav);
 function shouldStartAtTop() {
   const h = window.location.hash;
-  return !h || h === '#' || h === '#top';
+  return !h || h === '#' || h === '#top' || h === '#overview';
 }
 function scrollToDocumentStart() {
   if (!shouldStartAtTop()) return;
