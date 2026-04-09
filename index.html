@@ -152,6 +152,8 @@ body{
   gap:0 24px;
   align-items:start;
   max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
 }
 .hero-accent-line{
   width:2px;background:var(--blue-acc);
@@ -214,7 +216,11 @@ body{
 .section.visible{opacity:1;transform:translateY(0)}
 .section:nth-child(even){background:var(--bg)}
 
-.section-inner{max-width:960px}
+.section-inner{
+  max-width:960px;
+  margin-left:auto;
+  margin-right:auto;
+}
 
 .section-tag{
   display:inline-flex;align-items:center;gap:6px;
@@ -565,6 +571,8 @@ table.type-tbl tbody tr:hover{background:rgba(45,107,228,.04)}
   overflow:hidden;
   box-shadow:var(--shadow-lg);
   max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
   font-family:'IBM Plex Sans',sans-serif;
 }
 .mock-hd{
@@ -794,7 +802,15 @@ table.type-tbl tbody tr:hover{background:rgba(45,107,228,.04)}
 .page-footer{
   background:var(--navy);
   padding:32px 64px;
-  display:flex;align-items:center;justify-content:space-between;
+}
+.page-footer-inner{
+  max-width:960px;
+  margin-left:auto;
+  margin-right:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
 }
 .pf-left{
   font-size:12px;color:rgba(255,255,255,.4);
@@ -828,7 +844,8 @@ table.type-tbl tbody tr:hover{background:rgba(45,107,228,.04)}
   .swatch-grid,.chart-grid,.dos-grid,.map-spec,.mandatory-grid,.viz-grid,.grid-2,.grid-3,.font-spec-grid{grid-template-columns:1fr}
   .chart-card.span-2{grid-column:auto}
   .mock-body{grid-template-columns:1fr}
-  .page-footer{flex-direction:column;gap:16px;text-align:center}
+  .page-footer-inner{flex-direction:column;gap:16px;text-align:center}
+  .pf-right{text-align:center}
 }
 
 /* ── Brand logo (external asset) ── */
@@ -2027,15 +2044,17 @@ body.nav-open .sidebar-backdrop{display:block;opacity:1}
 
 <!-- FOOTER -->
 <div class="page-footer">
-  <div class="pf-left">
-    <strong>UNMISS Human Rights Division</strong><br>
-    Data Visualization Guidelines · Version 2.0 · April 2026<br>
-    Maintained by: Information Management Unit, HRD
-  </div>
-  <div class="pf-right">
-    Review cycle: Annual<br>
-    Queries: HRD IM Officer<br>
-    Supersedes all prior informal guidance
+  <div class="page-footer-inner">
+    <div class="pf-left">
+      <strong>UNMISS Human Rights Division</strong><br>
+      Data Visualization Guidelines · Version 2.0 · April 2026<br>
+      Maintained by: Information Management Unit, HRD
+    </div>
+    <div class="pf-right">
+      Review cycle: Annual<br>
+      Queries: HRD IM Officer<br>
+      Supersedes all prior informal guidance
+    </div>
   </div>
 </div>
 
