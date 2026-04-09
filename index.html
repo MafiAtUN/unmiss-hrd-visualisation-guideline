@@ -2122,7 +2122,7 @@ body.nav-open .sidebar-backdrop{display:block;opacity:1}
     </div>
   </div>
   <div class="page-footer-credit">
-    Credit: <strong>Mafiaul Islam</strong>, UNMISS HRD, <a href="mailto:islam50@un.org">islam50@un.org</a>
+    For questions about this online reference: <strong>Mafiaul Islam</strong>, UNMISS HRD — <a href="mailto:islam50@un.org">islam50@un.org</a>
   </div>
 </div>
 
@@ -2183,10 +2183,15 @@ function updateActiveNav() {
 }
 window.addEventListener('scroll', updateActiveNav, { passive: true });
 window.addEventListener('resize', updateActiveNav);
+function shouldStartAtTop() {
+  const h = window.location.hash;
+  return !h || h === '#' || h === '#top';
+}
 function scrollToDocumentStart() {
-  if (!window.location.hash || window.location.hash === '#') {
-    window.scrollTo(0, 0);
-  }
+  if (!shouldStartAtTop()) return;
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }
 function initNavStart() {
   scrollToDocumentStart();
@@ -2197,9 +2202,14 @@ if (document.readyState === 'loading') {
 } else {
   initNavStart();
 }
-window.addEventListener('load', initNavStart);
+window.addEventListener('load', () => {
+  scrollToDocumentStart();
+  setTimeout(scrollToDocumentStart, 0);
+  setTimeout(scrollToDocumentStart, 100);
+  updateActiveNav();
+});
 window.addEventListener('pageshow', (e) => {
-  if (e.persisted) scrollToDocumentStart();
+  if (e.persisted || shouldStartAtTop()) scrollToDocumentStart();
   updateActiveNav();
 });
 
