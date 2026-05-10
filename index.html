@@ -102,20 +102,37 @@ html[data-theme="dark"] body::before{
 .float-nav{
   position:fixed;
   z-index:500;
-  top:50%;
+  /* Top-aligned by default — avoids vertically centered panel covering content on short viewports (e.g. tablet landscape). */
+  top:max(20px, env(safe-area-inset-top));
   left:20px;
   right:auto;
-  transform:translateY(-50%);
+  transform:none;
   display:flex;
   flex-direction:column;
   align-items:flex-start;
   gap:10px;
   pointer-events:none;
 }
-.float-nav > *{pointer-events:auto}
+/* Only FAB + open drawer capture taps; avoids invisible closed panel stealing hits on narrow viewports */
+.float-nav__fab,
+.float-nav.float-nav--open .float-nav__panel{pointer-events:auto}
+.float-nav .float-nav__panel{
+  pointer-events:none;
+}
+@media (min-width:1181px){
+  .float-nav .float-nav__panel{
+    pointer-events:auto;
+  }
+}
+@media (min-width:1181px) and (min-height:720px){
+  .float-nav{
+    top:50%;
+    transform:translateY(-50%);
+  }
+}
 .float-nav__panel{
   width:min(300px,calc(100vw - 40px));
-  max-height:min(88vh,860px);
+  max-height:min(88vh, calc(100dvh - max(48px, env(safe-area-inset-top)) - env(safe-area-inset-bottom)),860px);
   display:flex;
   flex-direction:column;
   background:var(--float-glass);
@@ -288,12 +305,6 @@ html[data-theme="dark"] .nav-link.active{color:var(--text)}
    MAIN LAYOUT
 ───────────────────────────────────────────── */
 .main{margin-left:0;min-height:100vh;overflow-anchor:none;position:relative;z-index:1}
-@media(min-width:961px){
-  .hero{padding-left:calc(64px + 300px)}
-  .section{padding-left:calc(64px + 300px)}
-  .page-footer{padding-left:calc(64px + 300px)}
-  .page-footer-credit{padding:20px 64px 28px calc(64px + 300px)}
-}
 
 /* ─────────────────────────────────────────────
    HERO
@@ -1052,6 +1063,14 @@ table.type-tbl tbody tr:hover{background:rgba(45,107,228,.04)}
 .page-footer-credit a{color:#7EADEE;text-decoration:none}
 .page-footer-credit a:hover{text-decoration:underline}
 
+/* Reserve horizontal space for the fixed float-nav (must come AFTER base padding shorthands on .hero / .section / .page-footer — those would otherwise reset padding-left). */
+@media(min-width:1181px){
+  .hero{padding-left:calc(64px + 300px)}
+  .section{padding-left:calc(64px + 300px)}
+  .page-footer{padding-left:calc(64px + 300px)}
+  .page-footer-credit{padding-left:calc(64px + 300px)}
+}
+
 /* ─────────────────────────────────────────────
    MISC UTILITY
 ───────────────────────────────────────────── */
@@ -1065,7 +1084,7 @@ table.type-tbl tbody tr:hover{background:rgba(45,107,228,.04)}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .mt-sm{margin-top:16px}.mt-md{margin-top:28px}.mt-lg{margin-top:40px}
 
-@media(max-width:960px){
+@media(max-width:1180px){
   .main{margin-left:0;padding-right:0;padding-bottom:max(88px,env(safe-area-inset-bottom))}
   .float-nav{
     top:auto;bottom:20px;left:16px;right:auto;
@@ -1073,21 +1092,29 @@ table.type-tbl tbody tr:hover{background:rgba(45,107,228,.04)}
     flex-direction:column-reverse;
   }
   .float-nav__fab{display:inline-flex}
-  .float-nav__panel{
+  .float-nav .float-nav__panel{
     position:fixed;
     left:16px;bottom:76px;
     width:min(340px,calc(100vw - 32px));
-    max-height:min(70vh,560px);
-    transform:translateY(12px) scale(.96);
+    max-height:min(70vh,min(560px, calc(100dvh - 120px)));
+    /* Drawer fully off-screen when closed — opacity alone can leave a blurred layer overlapping text on some GPUs. */
+    transform:translate3d(calc(-100% - 24px), 16px, 0) scale(.96);
     opacity:0;
     pointer-events:none;
     visibility:hidden;
+    /* Ensure no stray backdrop-filter stacking over page text when closed */
+    clip-path:inset(0 100% 100% 0);
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
   }
-  .float-nav--open .float-nav__panel{
-    transform:translateY(0) scale(1);
+  .float-nav.float-nav--open .float-nav__panel{
+    transform:translate3d(0, 0, 0) scale(1);
     opacity:1;
     pointer-events:auto;
     visibility:visible;
+    clip-path:none;
+    backdrop-filter:blur(20px) saturate(1.4);
+    -webkit-backdrop-filter:blur(20px) saturate(1.4);
   }
   .float-nav-backdrop{display:block}
   .section{padding:40px 28px}
@@ -1121,7 +1148,7 @@ html[data-theme="dark"] .back-to-top{color:var(--text)}
 .back-to-top svg{width:20px;height:20px}
 
 .hero-grid{grid-template-columns:auto 1fr}
-@media(max-width:960px){
+@media(max-width:1180px){
   .back-to-top{right:16px;left:auto;bottom:20px}
   .section{padding:40px 28px}
   .hero{padding:32px 24px 40px;padding-top:28px}
@@ -2308,7 +2335,7 @@ html[data-theme="dark"] .back-to-top{color:var(--text)}
     </div>
   </div>
   <div class="page-footer-credit">
-    For questions about this online reference: <strong>Mafiaul Islam</strong>, UNMISS HRD — <a href="mailto:islam50@un.org">islam50@un.org</a>
+    For questions about this online reference: <strong>Mafizul Islam</strong>, UNMISS HRD — <a href="mailto:islam50@un.org">islam50@un.org</a>
   </div>
 </div>
 
@@ -2635,7 +2662,7 @@ new Chart(document.getElementById('c6'), {
   const shell = document.getElementById('floatNav');
   const backdrop = document.getElementById('floatNavBackdrop');
   const fab = document.getElementById('floatNavFab');
-  const mq = window.matchMedia('(max-width:960px)');
+  const mq = window.matchMedia('(max-width:1180px)');
 
   function setOpen(open) {
     if (!shell) return;
@@ -2671,6 +2698,7 @@ new Chart(document.getElementById('c6'), {
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeNav();
   });
+  setOpen(false);
 })();
 
 /* ── Nav link hover hints (pointer devices) ── */
